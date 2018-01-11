@@ -74,11 +74,11 @@ the following methods:
   previously generated files to be overridden, prefer a sufficiently
   fine-grained date-time pattern.
 
-  For instance, given `filePattern` is `/tmp/app-%{yyyyMMdd}.log`, if
+  For instance, given `filePattern` is `/tmp/app-%d{yyyyMMdd}.log`, if
   `SizeBasedRotationPolicy` gets triggered multiple times within a day,
   the last one will override the earlier generations in the same day.
   In order to avoid this, you should have been using a date-time pattern
-  with a higher resolution, such as `/tmp/app-%{yyyyMMdd-HHmmss-SSS}.log`.
+  with a higher resolution, such as `/tmp/app-%d{yyyyMMdd-HHmmss-SSS}.log`.
 
 # License
 
