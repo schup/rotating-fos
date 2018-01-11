@@ -42,7 +42,7 @@ try (RotatingFileOutputStream stream = new RotatingFileOutputStream(config)) {
 | Method(s) | Default | Description |
 | --------- | ------- | ----------- |
 | `file(File)`<br/>`file(String)` | N/A | file accessed (e.g., `/tmp/app.log`) |
-| `filePattern(RotatingFilePattern)`<br/>`filePattern(String)`| N/A | rotated file pattern (e.g., `/tmp/app-%{yyyyMMdd-HHmmss-SSS}.log`) |
+| `filePattern(RotatingFilePattern)`<br/>`filePattern(String)`| N/A | rotated file pattern (e.g., `/tmp/app-%d{yyyyMMdd-HHmmss-SSS}.log`) |
 | `policy(RotationPolicy)`<br/>`policies(Set<RotationPolicy> policies)` | N/A | rotation policies |
 | `timer(Timer)` | `new Timer()` | timer to be used for scheduling policies |
 | `append(boolean)` | `true` | append while opening the `file` |
@@ -79,6 +79,15 @@ the following methods:
   the last one will override the earlier generations in the same day.
   In order to avoid this, you should have been using a date-time pattern
   with a higher resolution, such as `/tmp/app-%d{yyyyMMdd-HHmmss-SSS}.log`.
+
+- **Make sure `RotationCallback` methods are not blocking!** Callbacks are
+  invoked using the `Timer` thread passed via `RotationConfig`. Hence
+  blocking callback methods are going to block `Timer` thread too.
+
+# Contributors
+
+- [Jonas (yawkat) Konrad](http://yawk.at/) (`RotatingFileOutputStream`
+  thread-safety improvements)
 
 # License
 
