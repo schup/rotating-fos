@@ -1,24 +1,27 @@
-[![Actions Status](https://github.com/schup/rotating-fos/workflows/CI/badge.svg)](https://github.com/schup/rotating-fos/actions)
-[![License](https://img.shields.io/github/license/schup/rotating-fos.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt)
+[![Actions Status](https://github.com/schup/rotating-fos-nodep/workflows/CI/badge.svg)](https://github.com/schup/rotating-fos-nodep/actions)
+[![License](https://img.shields.io/github/license/schup/rotating-fos-nodep.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 `rotating-fos` is a Java 8 library providing `RotatingFileOutputStream` which
 internally rotates a delegate `FileOutputStream` using provided rotation
 policies similar to [logrotate](https://github.com/logrotate/logrotate),
 [Log4j](https://logging.apache.org/log4j/) and [Logback](https://logback.qos.ch/).
 
+This is a fork of [vy/rotating-fos](https://github.com/vy/rotating-fos) that removes 3rd party dependencies.
+JUL (Java Util Logging) is used for logging. 
+
 # Usage
 
-You first need to include `rotating-fos` in your Maven/Gradle dependencies:
+You first need to include `rotating-fos-nodep` in your Maven/Gradle dependencies:
 
 ```xml
 <dependency>
     <groupId>com.vlkan.rfos</groupId>
-    <artifactId>rotating-fos</artifactId>
+    <artifactId>rotating-fos-nodep</artifactId>
     <version>${rotating-fos.version}</version>
 </dependency>
 ```
 
-(Note that the Java 9 module name is `com.vlkan.rfos`.)
+(Note that the Java 9 module name is `com.vlkan.rfos-nodep`.)
 
 `RotatingFileOutputStream` does not extend `java.io.FileOutputStream` (as a
 deliberate design decision, see [How (not) to extend standard collection
@@ -137,7 +140,7 @@ methods.
 
 # License
 
-Copyright &copy; 2018-2020 [Volkan Yazıcı](https://vlkan.com/)
+Copyright &copy; 2018-2021 [Volkan Yazıcı](https://vlkan.com/)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
