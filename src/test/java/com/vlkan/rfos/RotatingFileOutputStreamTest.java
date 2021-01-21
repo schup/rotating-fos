@@ -18,14 +18,12 @@ package com.vlkan.rfos;
 
 import com.vlkan.rfos.policy.RotationPolicy;
 import com.vlkan.rfos.policy.SizeBasedRotationPolicy;
+import lombok.extern.java.Log;
 import org.assertj.core.api.Assertions;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -39,12 +37,11 @@ import java.util.zip.GZIPOutputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Log
 public class RotatingFileOutputStreamTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RotatingFileOutputStreamTest.class);
-
-    @Rule
-    public TemporaryFolder tmpDir = new TemporaryFolder();
+    @TempDir
+    File tmpDir;
 
     @Test
     public void test_write_insensitive_policy() throws Exception {
@@ -60,9 +57,9 @@ public class RotatingFileOutputStreamTest {
 
         // Determine file names.
         String className = RotatingFileOutputStream.class.getSimpleName();
-        File file = new File(tmpDir.getRoot(), className + ".log");
+        File file = new File(tmpDir, className + ".log");
         String fileName = file.getAbsolutePath();
-        String fileNamePattern = new File(tmpDir.getRoot(), className + "-%d{yyyy}.log").getAbsolutePath();
+        String fileNamePattern = new File(tmpDir, className + "-%d{yyyy}.log").getAbsolutePath();
         String rotatedFileNameSuffix = compress ? ".gz" : "";
         Instant now = Instant.now();
         File rotatedFile = new File(
@@ -109,11 +106,11 @@ public class RotatingFileOutputStreamTest {
         Mockito.verify(policy, Mockito.never()).acceptWrite(Mockito.anyLong());
 
         // Trigger rotation.
-        LOGGER.trace("triggering rotation");
+        log.finest("triggering rotation");
         stream.rotate(policy, now);
 
         // Close the stream.
-        LOGGER.trace("closing stream");
+        log.finest("closing stream");
         stream.close();
 
         // Verify the rotation trigger.
@@ -182,9 +179,9 @@ public class RotatingFileOutputStreamTest {
 
         // Determine file names.
         String className = RotatingFileOutputStream.class.getSimpleName();
-        File file = new File(tmpDir.getRoot(), className + ".log");
+        File file = new File(tmpDir, className + ".log");
         String fileName = file.getAbsolutePath();
-        String fileNamePattern = new File(tmpDir.getRoot(), className + "-%d{yyyy}.log").getAbsolutePath();
+        String fileNamePattern = new File(tmpDir, className + "-%d{yyyy}.log").getAbsolutePath();
         File rotatedFile = new File(fileNamePattern.replace("%d{yyyy}", String.valueOf(Calendar.getInstance().get(Calendar.YEAR))));
 
         // Create the stream.
@@ -212,7 +209,7 @@ public class RotatingFileOutputStreamTest {
         Mockito.verifyNoMoreInteractions(callback);
 
         // Increase the size of the file just to the edge.
-        LOGGER.trace("writing to file");
+        log.finest("writing to file");
         for (int byteIndex = 0; byteIndex < maxByteCount; byteIndex++) {
             stream.write(byteIndex);
         }
@@ -222,7 +219,7 @@ public class RotatingFileOutputStreamTest {
         Mockito.verifyNoMoreInteractions(callback);
 
         // Push the file size off the threshold.
-        LOGGER.trace("writing more bytes to file");
+        log.finest("writing more bytes to file");
         stream.write(0xDEADBEEF);
 
         // Verify the rotation trigger.
@@ -267,9 +264,9 @@ public class RotatingFileOutputStreamTest {
 
         // Determine file names.
         String className = RotatingFileOutputStream.class.getSimpleName();
-        File file = new File(tmpDir.getRoot(), className + ".log");
+        File file = new File(tmpDir, className + ".log");
         String fileName = file.getAbsolutePath();
-        String fileNamePattern = new File(tmpDir.getRoot(), className + "-%d{yyyy}.log").getAbsolutePath();
+        String fileNamePattern = new File(tmpDir, className + "-%d{yyyy}.log").getAbsolutePath();
 
         // Create the stream.
         int maxByteCount = 1024;
@@ -295,7 +292,7 @@ public class RotatingFileOutputStreamTest {
         // Write some payload of size exceeding the threshold. This should trigger
         // an attempt to rotate the initial file, but the actual rotation should
         // have skipped since the file is empty.
-        LOGGER.trace("writing to file");
+        log.finest("writing to file");
         byte[] payload = new byte[2 * maxByteCount];
         for (int byteIndex = 0; byteIndex < payload.length; byteIndex++) {
             payload[byteIndex] = (byte) byteIndex;
@@ -319,9 +316,9 @@ public class RotatingFileOutputStreamTest {
 
         // Determine file names.
         String className = RotatingFileOutputStream.class.getSimpleName();
-        File file = new File(tmpDir.getRoot(), className + ".log");
+        File file = new File(tmpDir, className + ".log");
         String fileName = file.getAbsolutePath();
-        String fileNamePattern = new File(tmpDir.getRoot(), className + "-%d{yyyy}.log").getAbsolutePath();
+        String fileNamePattern = new File(tmpDir, className + "-%d{yyyy}.log").getAbsolutePath();
         File rotatedFile = new File(fileNamePattern.replace("%d{yyyy}", String.valueOf(Calendar.getInstance().get(Calendar.YEAR))));
 
         // Create the stream config.
@@ -344,13 +341,13 @@ public class RotatingFileOutputStreamTest {
         Assertions.assertThat(header2.length).isLessThan(maxByteCount);
         Mockito
                 .doAnswer(invocation -> {
-                    LOGGER.trace("injecting the 1st header");
+                    log.finest("injecting the 1st header");
                     OutputStream outputStream = invocation.getArgument(2);
                     outputStream.write(header1);
                     return null;
                 })
                 .doAnswer(invocation -> {
-                    LOGGER.trace("injecting the 2nd header");
+                    log.finest("injecting the 2nd header");
                     OutputStream outputStream = invocation.getArgument(2);
                     outputStream.write(header2);
                     return null;
@@ -365,13 +362,13 @@ public class RotatingFileOutputStreamTest {
         byte[] footer2 = "footer2".getBytes(StandardCharsets.UTF_8);
         Mockito
                 .doAnswer(invocation -> {
-                    LOGGER.trace("injecting the 1st footer");
+                    log.finest("injecting the 1st footer");
                     OutputStream outputStream = invocation.getArgument(2);
                     outputStream.write(footer1);
                     return null;
                 })
                 .doAnswer(invocation -> {
-                    LOGGER.trace("injecting the 2nd footer");
+                    log.finest("injecting the 2nd footer");
                     OutputStream outputStream = invocation.getArgument(2);
                     outputStream.write(footer2);
                     return null;
@@ -393,7 +390,7 @@ public class RotatingFileOutputStreamTest {
                         Mockito.any(OutputStream.class));
 
         // Write the 1st payload, should not exceed the size limit.
-        LOGGER.trace("writing the 1st payload");
+        log.finest("writing the 1st payload");
         byte[] payload1 = new byte[maxByteCount - header1.length];
         for (int byteIndex = 0; byteIndex < payload1.length; byteIndex++) {
             payload1[byteIndex] = (byte) (byteIndex % Byte.MAX_VALUE);
@@ -401,12 +398,12 @@ public class RotatingFileOutputStreamTest {
         stream.write(payload1);
 
         // Write the 2nd payload.
-        LOGGER.trace("writing the 2nd payload");
+        log.finest("writing the 2nd payload");
         byte[] payload2 = {(byte) (payload1[payload1.length - 1] + 1)};
         stream.write(payload2);
 
         // Close the stream.
-        LOGGER.trace("closing stream");
+        log.finest("closing stream");
         stream.close();
 
         // Verify the rotation trigger.

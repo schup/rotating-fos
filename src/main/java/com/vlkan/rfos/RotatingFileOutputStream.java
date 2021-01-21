@@ -17,17 +17,15 @@
 package com.vlkan.rfos;
 
 import com.vlkan.rfos.policy.RotationPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.java.Log;
 
 import java.io.*;
 import java.time.Instant;
 import java.util.*;
 import java.util.zip.GZIPOutputStream;
 
+@Log
 public class RotatingFileOutputStream extends OutputStream implements Rotatable {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RotatingFileOutputStream.class);
 
     private final RotationConfig config;
 
@@ -92,7 +90,7 @@ public class RotatingFileOutputStream extends OutputStream implements Rotatable 
 
         // Skip rotation if the file is empty.
         if (config.getFile().length() == 0) {
-            LOGGER.debug("empty file, skipping rotation {file={}}", config.getFile());
+            log.fine(String.format("empty file, skipping rotation {file=%s}", config.getFile()));
             return;
         }
 
@@ -102,7 +100,7 @@ public class RotatingFileOutputStream extends OutputStream implements Rotatable 
 
         // Rename the file.
         File rotatedFile = config.getFilePattern().create(instant).getAbsoluteFile();
-        LOGGER.debug("renaming {file={}, rotatedFile={}}", config.getFile(), rotatedFile);
+        log.fine(String.format("renaming {file=%s, rotatedFile=%s}", config.getFile(), rotatedFile));
         boolean renamed = config.getFile().renameTo(rotatedFile);
         if (!renamed) {
             String message = String.format("rename failure {file=%s, rotatedFile=%s}", config.getFile(), rotatedFile);
@@ -112,7 +110,7 @@ public class RotatingFileOutputStream extends OutputStream implements Rotatable 
         }
 
         // Re-open the file.
-        LOGGER.debug("re-opening file {file={}}", config.getFile());
+        log.fine(String.format("re-opening file {file=%s}", config.getFile()));
         stream = open(policy, instant);
 
         // Compress the old file, if necessary.
@@ -165,7 +163,7 @@ public class RotatingFileOutputStream extends OutputStream implements Rotatable 
     private static void unsafeSyncCompress(File rotatedFile, File compressedFile) throws IOException {
 
         // Compress the file.
-        LOGGER.debug("compressing {rotatedFile={}, compressedFile={}}", rotatedFile, compressedFile);
+        log.fine(String.format("compressing {rotatedFile=%s, compressedFile=%s}", rotatedFile, compressedFile));
         try (InputStream sourceStream = new FileInputStream(rotatedFile)) {
             try (FileOutputStream targetStream = new FileOutputStream(compressedFile);
                  GZIPOutputStream gzipTargetStream = new GZIPOutputStream(targetStream)) {
@@ -174,7 +172,7 @@ public class RotatingFileOutputStream extends OutputStream implements Rotatable 
         }
 
         // Delete the rotated file. (On Windows, delete must take place after closing the file input stream!)
-        LOGGER.debug("deleting old file {rotatedFile={}}", rotatedFile);
+        log.fine(String.format("deleting old file {rotatedFile=%s}", rotatedFile));
         boolean deleted = rotatedFile.delete();
         if (!deleted) {
             String message = String.format("failed deleting old file {rotatedFile=%s}", rotatedFile);

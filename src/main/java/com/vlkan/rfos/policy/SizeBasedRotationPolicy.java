@@ -17,15 +17,14 @@
 package com.vlkan.rfos.policy;
 
 import com.vlkan.rfos.Rotatable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.java.Log;
+
 
 import java.time.Instant;
 import java.util.Objects;
 
+@Log
 public class SizeBasedRotationPolicy implements RotationPolicy {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SizeBasedRotationPolicy.class);
 
     private final long maxByteCount;
 
@@ -62,7 +61,7 @@ public class SizeBasedRotationPolicy implements RotationPolicy {
     }
 
     private void rotate(Instant instant, long byteCount, Rotatable rotatable) {
-        LOGGER.debug("triggering {byteCount={}}", byteCount);
+        log.fine(String.format("triggering {byteCount=%s}", byteCount));
         rotatable.rotate(this, instant);
     }
 

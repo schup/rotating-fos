@@ -1,9 +1,8 @@
 package com.vlkan.rfos;
 
 import com.vlkan.rfos.policy.TimeBasedRotationPolicy;
+import lombok.extern.java.Log;
 import org.mockito.Mockito;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,15 +13,14 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Queue;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+@Log
 public enum SchedulerShutdownTestApp {;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SchedulerShutdownTestApp.class);
-
+    @Log
     private static final class DelayedRotationPolicy extends TimeBasedRotationPolicy {
-
-        private static final Logger LOGGER = LoggerFactory.getLogger(DelayedRotationPolicy.class);
 
         private final Queue<Duration> delays;
 
@@ -37,13 +35,13 @@ public enum SchedulerShutdownTestApp {;
         public Instant getTriggerInstant(Clock clock) {
             Duration delay = delays.poll();
             Objects.requireNonNull(delay, "delay");
-            LOGGER.info("setting trigger with delay {}", delay);
+            log.info(String.format("setting trigger with delay %s", delay));
             return clock.now().plus(delay);
         }
 
         @Override
         protected Logger getLogger() {
-            return LOGGER;
+            return log;
         }
 
     }
@@ -74,23 +72,23 @@ public enum SchedulerShutdownTestApp {;
                 .build();
 
         // Create the stream.
-        LOGGER.info("creating the stream");
+        log.info("creating the stream");
         RotatingFileOutputStream stream = new RotatingFileOutputStream(config);
 
         // Write something to stream to avoid rotation being skipped.
         stream.write(filePrefix.getBytes(StandardCharsets.US_ASCII));
 
         // Verify the 1st rotation.
-        LOGGER.info("verifying the 1st rotation");
+        log.info("verifying the 1st rotation");
         long expectedRotationDelay1Millis1 = rotationDelay1Millis + /* extra threshold */ 100;
         Mockito
                 .verify(callback, Mockito.timeout(expectedRotationDelay1Millis1))
                 .onTrigger(Mockito.eq(policy), Mockito.any(Instant.class));
 
         // Close the stream.
-        LOGGER.info("closing stream");
+        log.info("closing stream");
         stream.close();
-        LOGGER.info("closed stream");
+        log.info("closed stream");
 
     }
 

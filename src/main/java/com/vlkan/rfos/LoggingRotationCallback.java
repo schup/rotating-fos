@@ -17,18 +17,17 @@
 package com.vlkan.rfos;
 
 import com.vlkan.rfos.policy.RotationPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.java.Log;
 
 import java.io.File;
 import java.io.OutputStream;
 import java.time.Instant;
 
+@Log
 public class LoggingRotationCallback implements RotationCallback {
 
     private static final LoggingRotationCallback INSTANCE = new LoggingRotationCallback();
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoggingRotationCallback.class);
 
     private LoggingRotationCallback() {
         // Do nothing.
@@ -40,28 +39,28 @@ public class LoggingRotationCallback implements RotationCallback {
 
     @Override
     public void onTrigger(RotationPolicy policy, Instant instant) {
-        LOGGER.debug("rotation trigger {policy={}, instant={}}", policy, instant);
+        log.fine(String.format("rotation trigger {policy=%s, instant=%s}", policy, instant));
     }
 
     @Override
     public void onOpen(RotationPolicy policy, Instant instant, OutputStream ignored) {
-        LOGGER.debug("file open {policy={}, instant={}}", policy, instant);
+        log.fine(String.format("file open {policy=%s, instant=%s}", policy, instant));
     }
 
     @Override
     public void onClose(RotationPolicy policy, Instant instant, OutputStream stream) {
-        LOGGER.debug("file close {policy={}, instant={}}", policy, instant);
+        log.fine(String.format("file close {policy=%s, instant=%s}", policy, instant));
     }
 
     @Override
     public void onSuccess(RotationPolicy policy, Instant instant, File file) {
-        LOGGER.debug("rotation success {policy={}, instant={}, file={}}", policy, instant, file);
+        log.fine(String.format("rotation success {policy=%s, instant=%s, file=%s}", policy, instant, file));
     }
 
     @Override
     public void onFailure(RotationPolicy policy, Instant instant, File file, Exception error) {
         String message = String.format("rotation failure {policy=%s, instant=%s, file=%s}", policy, instant, file);
-        LOGGER.error(message, error);
+        log.severe(message);
     }
 
 }

@@ -20,12 +20,12 @@ import com.vlkan.rfos.Clock;
 import com.vlkan.rfos.Rotatable;
 import com.vlkan.rfos.RotatingFilePattern;
 import com.vlkan.rfos.RotationConfig;
-import org.junit.Test;
+
+import lombok.extern.java.Log;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.time.Duration;
@@ -33,9 +33,8 @@ import java.time.Instant;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+@Log
 public class DailyRotationPolicyTest {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DailyRotationPolicyTest.class);
 
     @Test
     public void test() {
@@ -57,7 +56,7 @@ public class DailyRotationPolicyTest {
                         if (++invocationCount < 3) {
                             runnable.run();
                         } else {
-                            LOGGER.trace("skipping execution {invocationCount={}}", invocationCount);
+                            log.finest(String.format("skipping execution {invocationCount=%d}", invocationCount));
                         }
                         return null;
                     }

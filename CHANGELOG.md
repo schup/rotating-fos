@@ -1,3 +1,7 @@
+### (2020-01-21) v0.9.3
+
+- fork of https://github.com/vy/rotating-fos - goal is to have a version without external dependencies
+
 ### (2020-01-10) v0.9.2
 
 - Shutdown the default `ScheduledExecutorService` at JVM exit. (#12)

@@ -17,7 +17,7 @@
 package com.vlkan.rfos;
 
 import org.assertj.core.api.ThrowableAssert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.time.Instant;

@@ -1,5 +1,3 @@
-[![Actions Status](https://github.com/vy/rotating-fos/workflows/CI/badge.svg)](https://github.com/vy/rotating-fos/actions)
-[![Maven Central](https://img.shields.io/maven-central/v/com.vlkan.rfos/rotating-fos.svg)](https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.vlkan.rfos%22)
 [![License](https://img.shields.io/github/license/vy/rotating-fos.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 `rotating-fos` is a Java 8 library providing `RotatingFileOutputStream` which

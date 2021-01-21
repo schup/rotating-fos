@@ -17,14 +17,13 @@
 package com.vlkan.rfos.policy;
 
 import com.vlkan.rfos.Clock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.java.Log;
 
 import java.time.Instant;
+import java.util.logging.Logger;
 
+@Log
 public class DailyRotationPolicy extends TimeBasedRotationPolicy {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(DailyRotationPolicy.class);
 
     private static final DailyRotationPolicy INSTANCE = new DailyRotationPolicy();
 
@@ -43,7 +42,7 @@ public class DailyRotationPolicy extends TimeBasedRotationPolicy {
 
     @Override
     protected Logger getLogger() {
-        return LOGGER;
+        return log;
     }
 
     @Override

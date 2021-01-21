@@ -19,11 +19,11 @@ package com.vlkan.rfos.policy;
 import com.vlkan.rfos.Clock;
 import com.vlkan.rfos.Rotatable;
 import com.vlkan.rfos.RotationConfig;
-import org.slf4j.Logger;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public abstract class TimeBasedRotationPolicy implements RotationPolicy {
 
@@ -50,7 +50,7 @@ public abstract class TimeBasedRotationPolicy implements RotationPolicy {
 
     private Runnable createTask(Rotatable rotatable, Instant triggerInstant) {
         return () -> {
-            getLogger().debug("triggering {triggerInstant={}}", triggerInstant);
+            getLogger().fine(String.format("triggering {triggerInstant=%s}", triggerInstant));
             rotatable.rotate(TimeBasedRotationPolicy.this, triggerInstant);
             start(rotatable);
         };
