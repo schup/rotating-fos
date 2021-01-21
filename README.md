@@ -1,4 +1,5 @@
-[![License](https://img.shields.io/github/license/vy/rotating-fos.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt)
+[![Actions Status](https://github.com/schup/rotating-fos/workflows/CI/badge.svg)](https://github.com/schup/rotating-fos/actions)
+[![License](https://img.shields.io/github/license/schup/rotating-fos.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt)
 
 `rotating-fos` is a Java 8 library providing `RotatingFileOutputStream` which
 internally rotates a delegate `FileOutputStream` using provided rotation
